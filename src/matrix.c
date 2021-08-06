@@ -59,7 +59,7 @@ int allocate_matrix(matrix **mat, int rows, int cols) {
     }
     matrix *ptr = malloc(sizeof(matrix));
     if(NULL == ptr) {
-        return -2
+        return -2;
     }
     ptr->cols = cols;
     ptr->rows = rows;
@@ -93,13 +93,13 @@ int allocate_matrix_ref(matrix **mat, matrix *from, int offset, int rows, int co
     }
     matrix *ptr = malloc(sizeof(matrix));
     if(NULL == ptr) {
-        return -2
+        return -2;
     }
     ptr->cols = cols;
     ptr->rows = rows;
     ptr->parent = from;
     ptr->ref_cnt = 1;
-    ptr->data = from[offset];
+    ptr->data = from->data + offset;
     /* TODO: don't know if i should do this */
     from->ref_cnt++;
     *mat = ptr;
@@ -127,7 +127,7 @@ void deallocate_matrix(matrix *mat) {
                 free(mat->parent->data);
                 free(mat->parent);
             }
-            free(mat)
+            free(mat);
         }
     }
 }
@@ -138,7 +138,7 @@ void deallocate_matrix(matrix *mat) {
  */
 double get(matrix *mat, int row, int col) {
     /* TODO: YOUR CODE HERE */
-    return *(mat + mat->rows*row + col);
+    return *(mat->data + mat->rows*row + col);
 }
 
 /*

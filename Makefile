@@ -1,4 +1,4 @@
-CC = gcc
+CC = /usr/local/bin/gcc-11
 CFLAGS = -g -Wall -std=c99 -fopenmp -mavx -mfma -pthread
 LDFLAGS = -fopenmp
 CUNIT = -L/home/ff/cs61c/cunit/install/lib -I/home/ff/cs61c/cunit/install/include -lcunit

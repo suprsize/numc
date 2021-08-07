@@ -65,13 +65,10 @@ int allocate_matrix(matrix **mat, int rows, int cols) {
     ptr->rows = rows;
     ptr->parent = NULL;
     ptr->ref_cnt = 1;
-    ptr->data = malloc(rows * cols * sizeof(double));
+    ptr->data = calloc(rows * cols, sizeof(double));
     if(NULL == ptr->data) {
         free(ptr);
         return -2;
-    }
-    for(int i = 0; i < rows*cols; i++) {
-        ptr->data[i] = 0;
     }
     *mat = ptr;
     return 0;
@@ -205,20 +202,14 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     }
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
-
-            set(result, r, c, 0);
+            for(int k = 0; k < mat1->cols; k++) {
+                result->data[result->rows * r + c] += mat1->data[mat1->rows * r + k] * mat2->data[mat2->rows * k + c];
+            }
         }
     }
 
 }
 
-double helper(matrix *mat1, matrix *mat2, int r, int c) {
-    for(int i = 0; i < mat1->rows; i++) {
-        for(int j = 0; j < mat2->cols; j++) {
-
-        }
-    }
-}
 
 /*
  * Store the result of raising mat to the (pow)th power to `result`.

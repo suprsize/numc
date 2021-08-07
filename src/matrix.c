@@ -71,7 +71,7 @@ int allocate_matrix(matrix **mat, int rows, int cols) {
         return -2;
     }
     for(int i = 0; i < rows*cols; i++) {
-        ptr->data[i] = 0.0;
+        ptr->data[i] = 0;
     }
     *mat = ptr;
     return 0;

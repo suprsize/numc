@@ -199,13 +199,22 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     if(mat1->cols != mat2->rows || result->rows != mat1->rows || result->cols != mat2->cols) {
         return -1;
     }
+    matrix *dummy = NULL;
+    int err = allocate_matrix(&dummy, result->rows, result->cols);
+    if(err != 0) {
+        return err;
+    }
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
             for(int k = 0; k < mat1->cols; k++) {
-                result->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * mat2->data[mat2->cols * k + c];
+                dummy->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * mat2->data[mat2->cols * k + c];
             }
         }
     }
+    for(int i = 0; i < result->rows * result->cols; i++) {
+        result->data[i] = dummy->data[i];
+    }
+    deallocate_matrix(dummy);
     return 0;
 }
 
@@ -217,8 +226,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
  */
 int pow_matrix(matrix *result, matrix *mat, int pow) {
     /* TODO: YOUR CODE HERE */
-    fill_matrix(result, 0.0);
-    if (add_matrix(result, result, mat) != 0) {
+    if (mul_matrix(result, mat, mat) != 0) {
         return -1;
     }
     for(int i = 0; i < pow; i++) {

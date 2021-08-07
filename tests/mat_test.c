@@ -169,7 +169,6 @@ void alloc_success_test(void) {
   CU_ASSERT_NOT_EQUAL(mat->data, NULL);
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 2; j++) {
-        printf("(%d, %d) = %f", i, j, get(mat, i, j));
         CU_ASSERT_EQUAL(get(mat, i, j), 0);
     }
   }

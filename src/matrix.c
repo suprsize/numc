@@ -226,11 +226,11 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
  */
 int pow_matrix(matrix *result, matrix *mat, int pow) {
     /* TODO: YOUR CODE HERE */
-    if (pow > 0) {
+    if (pow > 1) {
         if (mul_matrix(result, mat, mat) != 0) {
             return -1;
         }
-        for(int i = 0; i < pow - 1; i++) {
+        for(int i = 0; i < pow - 2; i++) {
             if (mul_matrix(result, result, mat) != 0) {
                 return -1;
             }

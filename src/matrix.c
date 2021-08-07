@@ -97,7 +97,6 @@ int allocate_matrix_ref(matrix **mat, matrix *from, int offset, int rows, int co
     ptr->parent = from;
     ptr->ref_cnt = 1;
     ptr->data = from->data + offset;
-    /* TODO: don't know if i should do this */
     from->ref_cnt++;
     *mat = ptr;
     return 0;
@@ -135,7 +134,7 @@ void deallocate_matrix(matrix *mat) {
  */
 double get(matrix *mat, int row, int col) {
     /* TODO: YOUR CODE HERE */
-    return mat->data[mat->rows*row + col];
+    return mat->data[mat->rows * row + col];
 }
 
 /*
@@ -144,7 +143,7 @@ double get(matrix *mat, int row, int col) {
  */
 void set(matrix *mat, int row, int col, double val) {
     /* TODO: YOUR CODE HERE */
-    mat->data[mat->rows*row + col] = val;
+    mat->data[mat->rows * row + col] = val;
 }
 
 /*

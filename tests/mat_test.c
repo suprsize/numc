@@ -32,7 +32,6 @@ void add_test(void) {
   deallocate_matrix(mat2);
 }
 
-/* (OPTIONAL) Uncomment the following sub_test if you have decided to implement it in matrix.c.
 void sub_test(void) {
   matrix *result = NULL;
   matrix *mat1 = NULL;
@@ -56,7 +55,7 @@ void sub_test(void) {
   deallocate_matrix(mat1);
   deallocate_matrix(mat2);
 }
-*/
+
 
 void mul_test(void) {
   matrix *result = NULL;
@@ -86,7 +85,6 @@ void mul_test(void) {
   deallocate_matrix(mat2);
 }
 
-/* (OPTIONAL) Uncomment the following neg_test if you have decided to implement it in matrix.c.
 void neg_test(void) {
   matrix *result = NULL;
   matrix *mat = NULL;
@@ -106,7 +104,7 @@ void neg_test(void) {
   deallocate_matrix(result);
   deallocate_matrix(mat);
 } 
-*/
+
 
 void abs_test(void) {
   matrix *result = NULL;
@@ -280,8 +278,8 @@ int main (void)
    }
 
   // Run all tests using the basic interface
-  CU_basic_set_mode(CU_BRM_NORMAL);
-  // CU_basic_set_mode(CU_BRM_VERBOSE);
+//  CU_basic_set_mode(CU_BRM_NORMAL);
+  CU_basic_set_mode(CU_BRM_VERBOSE);
   CU_basic_run_tests();
   printf("\n");
   CU_basic_show_failures(CU_get_failure_list());

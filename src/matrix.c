@@ -134,7 +134,7 @@ void deallocate_matrix(matrix *mat) {
  */
 double get(matrix *mat, int row, int col) {
     /* TODO: YOUR CODE HERE */
-    return mat->data[mat->rows * row + col];
+    return mat->data[mat->cols * row + col];
 }
 
 /*
@@ -143,7 +143,7 @@ double get(matrix *mat, int row, int col) {
  */
 void set(matrix *mat, int row, int col, double val) {
     /* TODO: YOUR CODE HERE */
-    mat->data[mat->rows * row + col] = val;
+    mat->data[mat->cols * row + col] = val;
 }
 
 /*
@@ -202,11 +202,11 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
             for(int k = 0; k < mat1->cols; k++) {
-                result->data[result->rows * r + c] += mat1->data[mat1->rows * r + k] * mat2->data[mat2->rows * k + c];
+                result->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * mat2->data[mat2->cols * k + c];
             }
         }
     }
-
+    return 0;
 }
 
 

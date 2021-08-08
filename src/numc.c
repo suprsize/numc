@@ -483,7 +483,7 @@ static PyObject *Matrix61c_pow(Matrix61c *self, PyObject *pow, PyObject *optiona
 static PyNumberMethods Matrix61c_as_number = {
     /* TODO: YOUR CODE HERE */
     .nb_add = (binaryfunc) Matrix61c_add,
-    .nb_matrix_multiply = (binaryfunc) Matrix61c_multiply,
+    .nb_multiply = (binaryfunc) Matrix61c_multiply,
     .nb_absolute = (unaryfunc) Matrix61c_abs,
     .nb_power = (ternaryfunc) Matrix61c_pow
 };

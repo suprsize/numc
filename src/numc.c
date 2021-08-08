@@ -345,7 +345,7 @@ static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
         rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
         return (PyObject*)rv;
     } else {
-        PyErr_SetString(PyExc_TypeError, "Invalid arguments");
+        PyErr_SetString(PyExc_TypeError, "Add: Invalid arguments");
         return NULL;
     }
 }
@@ -530,7 +530,7 @@ static PyObject *Matrix61c_set_value(Matrix61c *self, PyObject* args) {
         }
         set(self->mat, row, col, val);
     } else {
-        PyErr_SetString(PyExc_TypeError, "Invalid arguments");
+        PyErr_SetString(PyExc_TypeError, "Set: Invalid arguments");
         return NULL;
     }
     return Py_None;
@@ -567,7 +567,7 @@ static PyObject *Matrix61c_get_value(Matrix61c *self, PyObject* args) {
         double val = get(self->mat, row, col);
         return PyFloat_FromDouble(val);
     } else {
-        PyErr_SetString(PyExc_TypeError, "Invalid arguments");
+        PyErr_SetString(PyExc_TypeError, "Get: Invalid arguments");
         return NULL;
     }
 }
@@ -580,6 +580,8 @@ static PyObject *Matrix61c_get_value(Matrix61c *self, PyObject* args) {
  */
 static PyMethodDef Matrix61c_methods[] = {
     /* TODO: YOUR CODE HERE */
+    {"set", Matrix61c_set_value, 0, "(row, col, value)"},
+    {"get", Matrix61c_get_value, 0, "(row, col)"},
     {NULL, NULL, 0, NULL}
 };
 

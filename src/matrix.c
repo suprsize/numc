@@ -254,7 +254,11 @@ int abs_matrix(matrix *result, matrix *mat) {
         return -1;
     }
     for(int i = 0; i < mat->rows * mat->cols; i++) {
-        result->data[i] = abs(mat->data[i]);
+        if (mat->data[i] < 0) {
+            result->data[i] = -mat->data[i];
+        } else {
+            result->data[i] = mat->data[i];
+        }
     }
     return 0;
 }

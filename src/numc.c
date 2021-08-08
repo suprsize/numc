@@ -320,9 +320,9 @@ static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
         }
         Matrix61c* a = (Matrix61c*)self;
         Matrix61c* b = (Matrix61c*)mat;
-        int rows = a->matrix->rows;
-        int cols = a->matrix->cols;
-        if(rows != b->matrix->rows || cols != b->matrix->cols) {
+        int rows = a->mat->rows;
+        int cols = a->mat->cols;
+        if(rows != b->mat->rows || cols != b->mat->cols) {
             PyErr_SetString(PyExc_ValueError, "matrices dimensions must match!");
             return NULL;
         }
@@ -339,11 +339,11 @@ static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
             PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
             return NULL;
         }
-        add_matrix(new_mat, a->matrix, b->matrix);
+        add_matrix(new_mat, a->mat, b->mat);
         Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
-        rv->matrix = new_mat;
+        rv->mat= new_mat;
         rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
-        return rv;
+        return (PyObject*)rv;
     } else {
         PyErr_SetString(PyExc_TypeError, "Invalid arguments");
         return NULL;

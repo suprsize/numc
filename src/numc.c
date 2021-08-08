@@ -501,18 +501,34 @@ static PyNumberMethods Matrix61c_as_number = {
 static PyObject *Matrix61c_set_value(Matrix61c *self, PyObject* args) {
     /* TODO: YOUR CODE HERE */
 
-    PyObject *row = NULL;
-    PyObject *col = NULL;
+    if (!PyObject_TypeCheck(self, &Matrix61cType)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must of type numc.Matrix!");
+        return NULL;
+    }
+    PyObject *r = NULL;
+    PyObject *c = NULL;
     PyObject *v = NULL;
-    if (PyArg_UnpackTuple(args, "args", 3, 3, &row, &col, &v)) {
+    if (PyArg_UnpackTuple(args, "args", 3, 3, &r, &c, &v)) {
         if (!PyFloat_Check(v) && !PyLong_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "Value is not valid");
             return NULL;
         }
-
+        if (!PyLong_Check(r) || !PyLong_Check(c)) {
+            PyErr_SetString(PyExc_TypeError, "dimension is not valid");
+            return NULL;
+        }
         double val = PyFloat_AsDouble(v);
-
-        
+        int row = PyLong_AsLong(r);
+        int col = PyLong_AsLong(c);
+        if(row >= self->mat->rows || row < 0) {
+            PyErr_SetString(PyExc_IndexError, "row out of range");
+            return NULL;
+        }
+        if(col >= self->mat->cols || col < 0) {
+            PyErr_SetString(PyExc_IndexError, "col out of range");
+            return NULL;
+        }
+        set(self->mat, row, col, val);
     } else {
         PyErr_SetString(PyExc_TypeError, "Invalid arguments");
         return NULL;
@@ -527,15 +543,33 @@ static PyObject *Matrix61c_set_value(Matrix61c *self, PyObject* args) {
  */
 static PyObject *Matrix61c_get_value(Matrix61c *self, PyObject* args) {
     /* TODO: YOUR CODE HERE */
-    int index = PyLong_AsLong(key);
-    if (index >= self->mat->rows || index < 0) {
-        PyErr_SetString(PyExc_IndexError, "Index out of range");
+    if (!PyObject_TypeCheck(self, &Matrix61cType)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must of type numc.Matrix!");
         return NULL;
     }
-    int cols = self->mat->cols;
-    double val;
-
-    return PyFloat_FromDouble(val);
+    PyObject *r = NULL;
+    PyObject *c = NULL;
+    if (PyArg_UnpackTuple(args, "args", 2, 2, &r, &c)) {
+        if (!PyLong_Check(r) || !PyLong_Check(c)) {
+            PyErr_SetString(PyExc_TypeError, "dimension is not valid");
+            return NULL;
+        }
+        int row = PyLong_AsLong(r);
+        int col = PyLong_AsLong(c);
+        if(row >= self->mat->rows || row < 0) {
+            PyErr_SetString(PyExc_IndexError, "row out of range");
+            return NULL;
+        }
+        if(col >= self->mat->cols || col < 0) {
+            PyErr_SetString(PyExc_IndexError, "col out of range");
+            return NULL;
+        }
+        double val = get(self->mat, row, col);
+        return PyFloat_FromDouble(val);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Invalid arguments");
+        return NULL;
+    }
 }
 
 /*

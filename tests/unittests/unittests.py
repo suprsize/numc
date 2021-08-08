@@ -9,21 +9,53 @@ advise you to modify them and add new tests.
       cmp_dp_nc_matrix to compare the results
 """
 class TestAdd(TestCase):
-    def test_small_add(self):
+    def test_medium_add_small_numbers(self):
         # TODO: YOUR CODE HERE
-        dp_mat1, nc_mat1 = rand_dp_nc_matrix(2, 2, seed=0)
-        dp_mat2, nc_mat2 = rand_dp_nc_matrix(2, 2, seed=1)
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(10**4 +9, 10**4 +9,low=-1, high=1, seed=1)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(10**4 +9, 10**4 +9,low=-1, high=1, seed=19)
         is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
 
-    def test_medium_add(self):
+    def test_small_add_1(self):
         # TODO: YOUR CODE HERE
-        pass
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(10**1 +9, 10**1 +9, seed=11)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(10**1 +9, 10**1 +9, seed=123)
+        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
+
+    def test_small_add_2(self):
+        # TODO: YOUR CODE HERE
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(10**2, 10**2, seed=21)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(10**2, 10**2, seed=1273)
+        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
+
+    def test_medium_add_1(self):
+        # TODO: YOUR CODE HERE
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(10**4 +9, 10**4 +9, seed=1)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(10**4 +9, 10**4 +9, seed=19)
+        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
+
+    def test_medium_add_2(self):
+        # TODO: YOUR CODE HERE
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(2* (10**4), 2* (10**4), seed=189)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(2* (10**4), 2* (10**4), seed=1123)
+        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
 
     def test_large_add(self):
         # TODO: YOUR CODE HERE
-        pass
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(10**6, 10**6, seed=121)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(10**6, 10**6, seed=183)
+        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
 
 # (OPTIONAL) Uncomment the following TestSub class if you have implemented matrix subtraction.
 # class TestSub(TestCase):
@@ -50,20 +82,26 @@ class TestAdd(TestCase):
 #        pass
 
 class TestAbs(TestCase):
-    def test_small_abs(self):
+    def test_small_abs_1(self):
+        # TODO: YOUR CODE HERE
+        dp_mat, nc_mat = rand_dp_nc_matrix(10**1 +9, 10**1 +9, seed=11)
+        is_correct, speed_up = compute([dp_mat], [nc_mat], "abs")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
+
+    def test_medium_abs_1(self):
+        # TODO: YOUR CODE HERE
+        dp_mat, nc_mat = rand_dp_nc_matrix(10**1 +9, 10**1 +9, seed=11)
+        is_correct, speed_up = compute([dp_mat], [nc_mat], "abs")
+        self.assertTrue(is_correct)
+        print_speedup(speed_up)
+
+    def test_large_abs(self):
         # TODO: YOUR CODE HERE
         dp_mat, nc_mat = rand_dp_nc_matrix(2, 2, seed=0)
         is_correct, speed_up = compute([dp_mat], [nc_mat], "abs")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
-
-    def test_medium_abs(self):
-        # TODO: YOUR CODE HERE
-        pass
-
-    def test_large_abs(self):
-        # TODO: YOUR CODE HERE
-        pass
 
 # (OPTIONAL) Uncomment the following TestNeg class if you have implemented matrix negation.
 # class TestNeg(TestCase):

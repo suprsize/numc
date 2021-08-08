@@ -312,6 +312,42 @@ static PyMappingMethods Matrix61c_mapping = {
  */
 static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
     /* TODO: YOUR CODE HERE */
+    PyObject *mat = NULL;
+    if (PyArg_UnpackTuple(args, "args", 1, 1, &mat)) {
+        if (!PyObject_TypeCheck(mat, &Matrix61cType) || !PyObject_TypeCheck(self, &Matrix61cType)) {
+            PyErr_SetString(PyExc_TypeError, "Argument must of type numc.Matrix!");
+            return NULL;
+        }
+        Matrix61c* a = (Matrix61c*)self;
+        Matrix61c* b = (Matrix61c*)mat;
+        int rows = a->matrix->rows;
+        int cols = a->matrix->cols;
+        if(rows != b->matrix->rows || cols != b->matrix->cols) {
+            PyErr_SetString(PyExc_ValueError, "matrices dimensions must match!");
+            return NULL;
+        }
+        matrix* new_mat = NULL;
+        int alloc_failed = allocate_matrix(&new_mat, rows, cols);
+        if (alloc_failed){
+            if (alloc_failed == -1) {
+                PyErr_SetString(PyExc_ValueError, "dimensions must be positive to allocate!");
+                return NULL;
+            } else if (alloc_failed == -2) {
+                PyErr_SetString(PyExc_RuntimeError, "allocate_matrix or allocate_matrix_ref fails to allocate space.!");
+                return NULL;
+            }
+            PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
+            return NULL;
+        }
+        add_matrix(new_mat, a->matrix, b->matrix);
+        Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
+        rv->matrix = new_mat;
+        rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
+        return rv;
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Invalid arguments");
+        return NULL;
+    }
 }
 
 /*
@@ -320,6 +356,7 @@ static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
  */
 static PyObject *Matrix61c_sub(Matrix61c* self, PyObject* args) {
     /* TODO: YOUR CODE HERE */
+
     return 0;
 }
 

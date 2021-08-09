@@ -11,10 +11,10 @@ advise you to modify them and add new tests.
 
 small_rows = 10**1 + 9
 small_cols = 10**1 + 9
-medium_rows = 2 * (10**4) + 9
-medium_cols = 2 * (10**4) + 9
-high_rows = (10**5)
-high_cols = (10**5)
+medium_rows = 2 * (10**2) + 9
+medium_cols = 2 * (10**2) + 9
+high_rows = (10**3)
+high_cols = (10**3)
 
 class TestAdd(TestCase):
     def test_small_numbers_add(self):
@@ -35,8 +35,8 @@ class TestAdd(TestCase):
 
     def test_medium_add(self):
         # TODO: YOUR CODE HERE
-        dp_mat1, nc_mat1 = rand_dp_nc_matrix(medium_rows, medium_cols, seed=1467)
-        dp_mat2, nc_mat2 = rand_dp_nc_matrix(medium_rows, medium_cols, seed=159)
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(medium_rows * 1000, medium_cols * 1000, seed=1467)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(medium_rows * 1000, medium_cols * 1000, seed=159)
         is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
@@ -44,8 +44,8 @@ class TestAdd(TestCase):
 
     def test_large_add(self):
         # TODO: YOUR CODE HERE
-        dp_mat1, nc_mat1 = rand_dp_nc_matrix(high_rows, high_cols, seed=189)
-        dp_mat2, nc_mat2 = rand_dp_nc_matrix(high_rows, high_cols, seed=1123)
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(high_rows * 1000, high_cols * 1000, seed=189)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(high_rows * 1000, high_cols * 1000, seed=1123)
         is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)

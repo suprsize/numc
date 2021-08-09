@@ -160,9 +160,10 @@ int add_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         return -1;
     }
     unsigned int size = mat1->rows * mat1->cols;
-    #pragma omp for
+    #pragma omp parallel
     {
         __m256d sum, temp1, temp2;
+        #pragma omp for
         for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
             temp1 = _mm256_loadu_pd(mat1->data + i);
             temp2 = _mm256_loadu_pd(mat2->data + i);

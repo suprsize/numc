@@ -159,7 +159,15 @@ int add_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         mat1->cols != mat2->cols || mat1->cols != result->cols) {
         return -1;
     }
-    for(int i = 0; i < mat1->rows * mat1->cols; i++) {
+    unsigned int size = mat1->rows * mat1->cols;
+    __m256d sum, temp1, temp2 = 0;
+    for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
+        temp1 = _mm256_loadu_pd(mat1->data + i);
+        temp2 = _mm256_loadu_pd(mat2->data + i);
+        sum = _mm256_add_pd(temp1, temp2);
+        _mm256_storeu_pd(result->data + i, sum);
+    }
+    for(unsigned int i = size - (size % 4); i < size; i++) {
         result->data[i] = mat1->data[i] + mat2->data[i];
     }
     return 0;

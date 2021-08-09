@@ -149,7 +149,7 @@ void fill_matrix(matrix *mat, double val) {
     __m256d val_256 = _mm256_set1_pd(val);
     unsigned int size = mat->rows * mat->cols;
     #pragma omp parallel for
-    for(int i = 0; i < size / 4 * 4; i += 4) {
+    for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
         _mm256_storeu_pd(mat->data + i, val_256);
     }
     for(unsigned int i = size - (size % 4); i < size; i++) {
@@ -213,7 +213,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     }
     #pragma omp parallel for
     for(unsigned int r = 0; r < transp2->rows; r++) {
-        for(int c = 0; c < transp2->cols; c++) {
+        for(unsigned int c = 0; c < transp2->cols; c++) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
     }
@@ -274,8 +274,13 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             if (mul_fail) {
                 return mul_fail;
             }
+            int size = result->rows * result->cols;
             #pragma omp parallel for
-            for(unsigned int i = 0; i < result->rows * result->cols; i++) {
+            for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
+                __m256d temp_256 = _mm256_loadu_pd(temp->data + i);
+                _mm256_storeu_pd(result->data + i, temp_256);
+            }
+            for(unsigned int i = size - (size % 4); i < size; i++) {
                 result->data[i] = temp->data[i];
             }
             deallocate_matrix(temp);

@@ -205,8 +205,8 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     if(allocate_fail != 0) {
         return allocate_fail;
     }
+    #pragma omp parallel for
     for(int r = 0; r < transp2->rows; r++) {
-//        #pragma omp parallel for
         for(int c = 0; c < transp2->cols; c++) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }

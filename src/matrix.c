@@ -195,7 +195,6 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     if(err != 0) {
         return err;
     }
-
     matrix *transp2 = NULL;
     err = allocate_matrix(&transp2, mat2->cols, mat2->rows);
     if(err != 0) {
@@ -206,8 +205,6 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
     }
-
-
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
             for(int k = 0; k < mat1->cols; k++) {
@@ -219,6 +216,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         result->data[i] = dummy->data[i];
     }
     deallocate_matrix(dummy);
+    deallocate_matrix(transp2);
     return 0;
 }
 

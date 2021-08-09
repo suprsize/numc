@@ -314,13 +314,20 @@ int abs_matrix(matrix *result, matrix *mat) {
     }
     __m256d all_zeros = _mm256_setzero_pd();
     unsigned int size = mat->rows * mat->cols;
-    for(unsigned int i = 0; i < size; i += 4) {
+    for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
         __m256d mat_256 = _mm256_loadu_pd(mat->data + i);
         __m256d mat_256_neg = _mm256_sub_pd(all_zeros, mat_256);
-        __m256d mask = _mm256_cmp_pd(mat_256, all_zeros, 1);
+        __m256d mask = _mm256_cmp_pd(mat_256, all_zeros, 0x11);
         __m256d pos_and_zeros = _mm256_and_pd(mask, mat_256_neg);
         __m256d all_pos = _mm256_max_pd(pos_and_zeros, mat_256);
         _mm256_storeu_pd(result->data + i, all_pos);
+    }
+    for(unsigned int i = size - (size % 4); i < size; i++) {
+        if (mat->data[i] < 0) {
+            result->data[i] = -mat->data[i];
+        } else {
+            result->data[i] = mat->data[i];
+        }
     }
     return 0;
 }

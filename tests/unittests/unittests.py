@@ -9,12 +9,12 @@ advise you to modify them and add new tests.
       cmp_dp_nc_matrix to compare the results
 """
 
-small_rows = 10**1 +9
-small_cols = 10**1 +9
-medium_rows = 10**3 +9
-medium_cols = 10**3 +9
-high_rows = 2* (10**4)
-high_cols = 2* (10**4)
+small_rows = 10**1 + 9
+small_cols = 10**1 + 9
+medium_rows = 2 * (10**2) + 9
+medium_cols = 2 * (10**2) + 9
+high_rows = (10**3)
+high_cols = (10**3)
 
 class TestAdd(TestCase):
     def test_small_numbers_add(self):

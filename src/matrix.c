@@ -292,10 +292,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             result->data[result->cols * i + i] = 1;
         }
     } else if (pow == 1) {
-        #pragma omp parallel for
-        for(unsigned int i = 0; i < result->rows * result->cols; i++) {
-            result->data[i] = mat->data[i];
-        }
+        memcpy(result->data, mat->data, sizeof(double) * result->rows * result->cols);
     }
     return 0;
 }

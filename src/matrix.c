@@ -276,12 +276,12 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         }
     } else if (pow == 0){
         fill_matrix(result, 0);
-//        #pragma omp parallel for
+        #pragma omp parallel for
         for(int i = 0; i < result->cols; i++) {
             result->data[result->cols * i + i] = 1;
         }
     } else if (pow == 1) {
-//        #pragma omp parallel for
+        #pragma omp parallel for
         for(int i = 0; i < result->rows * result->cols; i++) {
             result->data[i] = mat->data[i];
         }

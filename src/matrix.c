@@ -224,11 +224,9 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         for(unsigned int c = 0; c < result->cols; c++) {
             double temp_sum = 0;
             int size = mat1->cols;
-//            #pragma omp parallel
             {
                 __m256d temp1, temp2;
                 __m256d sum = _mm256_setzero_pd();
-//                #pragma omp for
                 for(unsigned int k = 0; k < size / 4 * 4; k += 4) {
                     temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
                     temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
@@ -237,7 +235,6 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
                 double sum_arr[4];
                 _mm256_storeu_pd(sum_arr, sum);
                 double arr_total = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
-//                #pragma omp critical
                 temp_sum += arr_total;
             }
             for(unsigned int k = size - (size % 4); k < size; k++) {
@@ -259,31 +256,30 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 int pow_matrix(matrix *result, matrix *mat, int pow) {
     /* TODO: check for power of smaller than 2 */
     if (pow > 1) {
-        int mul_fail = mul_matrix(result, mat, mat);
+        matrix *temp = NULL;
+        int allocate_fail = allocate_matrix(&temp, result->rows, result->cols);
+        if(allocate_fail) {
+            return allocate_fail;
+        }
+
+        int mul_fail = mul_matrix(temp, mat, mat);
         if (mul_fail) {
             return mul_fail;
         }
-        for(unsigned int i = 0; i < pow - 2; i++) {
-            matrix *temp = NULL;
-            int allocate_fail = allocate_matrix(&temp, result->rows, result->cols);
+        if(pow % 2 == 0) {
+            pow_matrix(result, temp, pow / 2);
+        } else {
+            pow_matrix(result, temp, (pow - 1) / 2);
+            matrix *temp2 = NULL;
+            int allocate_fail = allocate_matrix(&temp2, result->rows, result->cols);
             if(allocate_fail) {
                 return allocate_fail;
             }
-
-            int mul_fail = mul_matrix(temp, result, mat);
+            int mul_fail = mul_matrix(temp2, result, mat);
             if (mul_fail) {
                 return mul_fail;
             }
-            int size = result->rows * result->cols;
-            #pragma omp parallel for
-            for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
-                __m256d temp_256 = _mm256_loadu_pd(temp->data + i);
-                _mm256_storeu_pd(result->data + i, temp_256);
-            }
-            for(unsigned int i = size - (size % 4); i < size; i++) {
-                result->data[i] = temp->data[i];
-            }
-            deallocate_matrix(temp);
+            memcpy(result->data, temp2->data, sizeof(double) * result->rows * result->cols);
         }
     } else if (pow == 0){
         fill_matrix(result, 0);

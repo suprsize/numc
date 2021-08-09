@@ -203,9 +203,11 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
+            double temp = 0;
             for(int k = 0; k < mat1->cols; k++) {
-                result->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
+                temp += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
             }
+            result->data[result->cols * r + c] = temp;
         }
     }
     deallocate_matrix(transp2);
@@ -225,8 +227,6 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         if (mul_fail) {
             return mul_fail;
         }
-
-
         for(int i = 0; i < pow - 2; i++) {
             matrix *temp = NULL;
             int allocate_fail = allocate_matrix(&temp, result->rows, result->cols);
@@ -238,13 +238,13 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             if (mul_fail) {
                 return mul_fail;
             }
-
-            deallocate_matrix(result);
-            result = temp;
-            temp = NULL;
+            for(int i = 0; i < result->rows * result->cols; i++) {
+                result->data[i] = temp->data[i];
+            }
+            deallocate_matrix(temp);
         }
     } else if (pow == 0){
-//        fill_matrix(result, 0);
+        fill_matrix(result, 0);
         for(int i = 0; i < result->cols; i++) {
             result->data[result->cols * i + i] = 1;
         }

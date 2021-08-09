@@ -314,7 +314,7 @@ int abs_matrix(matrix *result, matrix *mat) {
     }
     __m256d all_zeros = _mm256_setzero_pd();
     unsigned int size = mat->rows * mat->cols;
-    #pragma omp parallel for
+//    #pragma omp parallel for
     for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
         __m256d mat_256 = _mm256_loadu_pd(mat->data + i);
         __m256d mat_256_neg = _mm256_sub_pd(all_zeros, mat_256);

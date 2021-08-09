@@ -130,7 +130,7 @@ void deallocate_matrix(matrix *mat) {
  * You may assume `row` and `col` are valid.
  */
 double get(matrix *mat, int row, int col) {
-    return mat->data[mat->cols * row + col];
+    return *(mat->data + mat->cols * row + col);
 }
 
 /*
@@ -138,7 +138,7 @@ double get(matrix *mat, int row, int col) {
  * `col` are valid
  */
 void set(matrix *mat, int row, int col, double val) {
-    mat->data[mat->cols * row + col] = val;
+    *(mat->data + mat->cols * row + col) = val;
 }
 
 /*
@@ -268,7 +268,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             if (mul_fail) {
                 return mul_fail;
             }
-//            #pragma omp parallel for
+            #pragma omp parallel for
             for(unsigned int i = 0; i < result->rows * result->cols; i++) {
                 result->data[i] = temp->data[i];
             }
@@ -276,12 +276,12 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         }
     } else if (pow == 0){
         fill_matrix(result, 0);
-//        #pragma omp parallel for
+        #pragma omp parallel for
         for(unsigned int i = 0; i < result->cols; i++) {
             result->data[result->cols * i + i] = 1;
         }
     } else if (pow == 1) {
-//        #pragma omp parallel for
+        #pragma omp parallel for
         for(unsigned int i = 0; i < result->rows * result->cols; i++) {
             result->data[i] = mat->data[i];
         }

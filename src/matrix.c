@@ -224,8 +224,8 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
                 sum = _mm256_setzero_pd();
 //                #pragma omp for
                 for(int k = 0; k < size / 4 * 4; k += 4) {
-                    temp1 = _mm256_loadu_pd(mat1->data[mat1->cols * r + k]);
-                    temp2 = _mm256_loadu_pd(transp2->data[transp2->cols * c + k]);
+                    temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
+                    temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
                     sum = _mm256_add_pd(sum, _mm256_mul_pd(temp1, temp2));
 //                    temp += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
                 }
@@ -233,7 +233,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
                 double sum_arr[4];
                 _mm256_storeu_pd(sum_arr, sum);
                 temp = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
-                for(int i = size - (size % 4); i < size; i++) {
+                for(int k = size - (size % 4); k < size; k++) {
                     temp += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
                 }
                 result->data[result->cols * r + c] = temp;

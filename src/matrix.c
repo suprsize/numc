@@ -191,9 +191,9 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         return -1;
     }
     matrix *transp2 = NULL;
-    err = allocate_matrix(&transp2, mat2->cols, mat2->rows);
-    if(err != 0) {
-        return err;
+    int allocate_fail = allocate_matrix(&transp2, mat2->cols, mat2->rows);
+    if(allocate_fail != 0) {
+        return allocate_fail;
     }
     for(int r = 0; r < transp2->rows; r++) {
         for(int c = 0; c < transp2->cols; c++) {
@@ -243,21 +243,6 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             result = temp;
             temp = NULL;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     } else if (pow == 0){
 //        fill_matrix(result, 0);
         for(int i = 0; i < result->cols; i++) {

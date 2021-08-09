@@ -145,8 +145,14 @@ void set(matrix *mat, int row, int col, double val) {
  * Sets all entries in mat to val
  */
 void fill_matrix(matrix *mat, double val) {
+
+    __m256d val_256 = _mm256_set1_pd(val);
+    unsigned int size = mat->rows * mat->cols;
     #pragma omp parallel for
-    for(int i = 0; i < mat->rows * mat->cols; i++) {
+    for(int i = 0; i < size / 4 * 4; i += 4) {
+        _mm256_storeu_pd(mat->data + i, val_256)
+    }
+    for(unsigned int i = size - (size % 4); i < size; i++) {
         mat->data[i] = val;
     }
 }

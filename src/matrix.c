@@ -206,16 +206,16 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         return allocate_fail;
     }
     #pragma omp parallel for
-    for(int r = 0; r < transp2->rows; r++) {
+    for(unsigned int r = 0; r < transp2->rows; r++) {
         for(int c = 0; c < transp2->cols; c++) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
     }
 
     #pragma omp parallel for
-    for(int r = 0; r < result->rows; r++) {
+    for(unsigned int r = 0; r < result->rows; r++) {
         #pragma omp parallel for
-        for(int c = 0; c < result->cols; c++) {
+        for(unsigned int c = 0; c < result->cols; c++) {
             double temp_sum = 0;
             int size = mat1->cols;
 //            #pragma omp parallel
@@ -223,7 +223,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
                 __m256d temp1, temp2;
                 __m256d sum = _mm256_setzero_pd();
 //                #pragma omp for
-                for(int k = 0; k < size / 4 * 4; k += 4) {
+                for(unsigned int k = 0; k < size / 4 * 4; k += 4) {
                     temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
                     temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
                     sum = _mm256_fmadd_pd(temp1, temp2, sum);
@@ -234,7 +234,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 //                #pragma omp critical
                 temp_sum += arr_total;
             }
-            for(int k = size - (size % 4); k < size; k++) {
+            for(unsigned int k = size - (size % 4); k < size; k++) {
                 temp_sum += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
             }
             result->data[result->cols * r + c] = temp_sum;
@@ -257,7 +257,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         if (mul_fail) {
             return mul_fail;
         }
-        for(int i = 0; i < pow - 2; i++) {
+        for(unsigned int i = 0; i < pow - 2; i++) {
             matrix *temp = NULL;
             int allocate_fail = allocate_matrix(&temp, result->rows, result->cols);
             if(allocate_fail) {
@@ -269,20 +269,20 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
                 return mul_fail;
             }
 //            #pragma omp parallel for
-            for(int i = 0; i < result->rows * result->cols; i++) {
+            for(unsigned int i = 0; i < result->rows * result->cols; i++) {
                 result->data[i] = temp->data[i];
             }
             deallocate_matrix(temp);
         }
     } else if (pow == 0){
         fill_matrix(result, 0);
-        #pragma omp parallel for
-        for(int i = 0; i < result->cols; i++) {
+//        #pragma omp parallel for
+        for(unsigned int i = 0; i < result->cols; i++) {
             result->data[result->cols * i + i] = 1;
         }
     } else if (pow == 1) {
-        #pragma omp parallel for
-        for(int i = 0; i < result->rows * result->cols; i++) {
+//        #pragma omp parallel for
+        for(unsigned int i = 0; i < result->rows * result->cols; i++) {
             result->data[i] = mat->data[i];
         }
     }
@@ -312,13 +312,15 @@ int abs_matrix(matrix *result, matrix *mat) {
     if (mat->rows != result->rows || mat->cols != result->cols) {
         return -1;
     }
-//    #pragma omp parallel for
-    for(int i = 0; i < mat->rows * mat->cols; i++) {
-        if (mat->data[i] < 0) {
-            result->data[i] = -mat->data[i];
-        } else {
-            result->data[i] = mat->data[i];
-        }
+    __m256d all_zeros = _mm256_setzero_pd();
+    unsigned int size = mat->rows * mat->cols;
+    for(unsigned int i = 0; i < size; i += 4) {
+        __m256d mat_256 = _mm256_loadu_pd(mat->data + i);
+        __m256d mat_256_neg = _mm256_sub_pd(all_zeros, mat_256);
+        __m256d mask = _mm256_cmp_pd(mat_256, all_zeros, 1);
+        __m256d pos_and_zeros = _mm256_and_pd(mask, mat_256_neg);
+        __m256d all_pos = _mm256_max_pd(pos_and_zeros, mat_256);
+        _mm256_storeu_pd(result->data + i, all_pos);
     }
     return 0;
 }

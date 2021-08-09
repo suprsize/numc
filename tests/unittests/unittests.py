@@ -35,8 +35,8 @@ class TestAdd(TestCase):
 
     def test_medium_add(self):
         # TODO: YOUR CODE HERE
-        dp_mat1, nc_mat1 = rand_dp_nc_matrix(medium_rows * 1000, medium_cols * 1000, seed=1467)
-        dp_mat2, nc_mat2 = rand_dp_nc_matrix(medium_rows * 1000, medium_cols * 1000, seed=159)
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(medium_rows * 10, medium_cols * 10, seed=1467)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(medium_rows * 10, medium_cols * 10, seed=159)
         is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
@@ -44,8 +44,8 @@ class TestAdd(TestCase):
 
     def test_large_add(self):
         # TODO: YOUR CODE HERE
-        dp_mat1, nc_mat1 = rand_dp_nc_matrix(high_rows * 1000, high_cols * 1000, seed=189)
-        dp_mat2, nc_mat2 = rand_dp_nc_matrix(high_rows * 1000, high_cols * 1000, seed=1123)
+        dp_mat1, nc_mat1 = rand_dp_nc_matrix(high_rows * 100, high_cols * 100, seed=189)
+        dp_mat2, nc_mat2 = rand_dp_nc_matrix(high_rows * 100, high_cols * 100, seed=1123)
         is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)

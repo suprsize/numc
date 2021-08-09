@@ -171,9 +171,9 @@ int add_matrix(matrix *result, matrix *mat1, matrix *mat2) {
             sum = _mm256_add_pd(temp1, temp2);
             _mm256_storeu_pd(result->data + i, sum);
         }
-        for(unsigned int i = size - (size % 4); i < size; i++) {
-            result->data[i] = mat1->data[i] + mat2->data[i];
-        }
+    }
+    for(unsigned int i = size - (size % 4); i < size; i++) {
+        result->data[i] = mat1->data[i] + mat2->data[i];
     }
     return 0;
 }
@@ -217,27 +217,26 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
-//            #pragma omp parallel
+            double temp_sum = 0;
+            int size = mat1->cols;
+            #pragma omp parallel reduction(+:temp_sum)
             {
-                int size = mat1->cols;
-                __m256d sum, temp1, temp2;
-                sum = _mm256_setzero_pd();
-//                #pragma omp for
+                __m256d temp1, temp2;
+                __m256d sum = _mm256_setzero_pd();
+                #pragma omp for
                 for(int k = 0; k < size / 4 * 4; k += 4) {
                     temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
                     temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
                     sum = _mm256_add_pd(sum, _mm256_mul_pd(temp1, temp2));
-//                    temp += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
                 }
-                double temp = 0;
                 double sum_arr[4];
                 _mm256_storeu_pd(sum_arr, sum);
-                temp = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
-                for(int k = size - (size % 4); k < size; k++) {
-                    temp += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
-                }
-                result->data[result->cols * r + c] = temp;
+                temp_sum = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
             }
+            for(int k = size - (size % 4); k < size; k++) {
+                temp_sum += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
+            }
+            result->data[result->cols * r + c] = temp_sum;
         }
     }
     deallocate_matrix(transp2);

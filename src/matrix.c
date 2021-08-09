@@ -160,6 +160,7 @@ int add_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         mat1->cols != mat2->cols || mat1->cols != result->cols) {
         return -1;
     }
+    omp_set_num_threads(4);
     unsigned int size = mat1->rows * mat1->cols;
     __m256d sum, temp1, temp2;
     #pragma omp parallel for private(sum, temp1, temp2)

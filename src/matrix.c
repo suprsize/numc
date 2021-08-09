@@ -212,6 +212,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
         }
     }
 
+    #pragma omp parallel for
     for(int r = 0; r < result->rows; r++) {
         #pragma omp parallel for
         for(int c = 0; c < result->cols; c++) {
@@ -311,7 +312,7 @@ int abs_matrix(matrix *result, matrix *mat) {
     if (mat->rows != result->rows || mat->cols != result->cols) {
         return -1;
     }
-    #pragma omp parallel for
+//    #pragma omp parallel for
     for(int i = 0; i < mat->rows * mat->cols; i++) {
         if (mat->data[i] < 0) {
             result->data[i] = -mat->data[i];

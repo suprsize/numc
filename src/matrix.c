@@ -213,6 +213,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     }
     #pragma omp parallel for
     for(unsigned int r = 0; r < transp2->rows; r++) {
+        #pragma omp parallel for
         for(unsigned int c = 0; c < transp2->cols; c++) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
@@ -261,7 +262,6 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         if(allocate_fail) {
             return allocate_fail;
         }
-
         int mul_fail = mul_matrix(temp, mat, mat);
         if (mul_fail) {
             return mul_fail;
@@ -281,6 +281,14 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             }
             memcpy(result->data, temp2->data, sizeof(double) * result->rows * result->cols);
         }
+
+
+
+
+
+
+
+
     } else if (pow == 0){
         fill_matrix(result, 0);
         #pragma omp parallel for

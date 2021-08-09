@@ -190,11 +190,6 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     if(mat1->cols != mat2->rows || result->rows != mat1->rows || result->cols != mat2->cols) {
         return -1;
     }
-    matrix *dummy = NULL;
-    int err = allocate_matrix(&dummy, result->rows, result->cols);
-    if(err != 0) {
-        return err;
-    }
     matrix *transp2 = NULL;
     err = allocate_matrix(&transp2, mat2->cols, mat2->rows);
     if(err != 0) {
@@ -205,17 +200,14 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
     }
+
     for(int r = 0; r < result->rows; r++) {
         for(int c = 0; c < result->cols; c++) {
             for(int k = 0; k < mat1->cols; k++) {
-                dummy->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
+                result->data[result->cols * r + c] += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
             }
         }
     }
-    for(int i = 0; i < result->rows * result->cols; i++) {
-        result->data[i] = dummy->data[i];
-    }
-    deallocate_matrix(dummy);
     deallocate_matrix(transp2);
     return 0;
 }
@@ -229,16 +221,45 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 int pow_matrix(matrix *result, matrix *mat, int pow) {
     /* TODO: check for power of smaller than 2 */
     if (pow > 1) {
-        if (mul_matrix(result, mat, mat) != 0) {
-            return -1;
+        int mul_fail = mul_matrix(result, mat, mat);
+        if (mul_fail) {
+            return mul_fail;
         }
+
+
         for(int i = 0; i < pow - 2; i++) {
-            if (mul_matrix(result, result, mat) != 0) {
-                return -1;
+            matrix *temp = NULL;
+            int allocate_fail = allocate_matrix(&temp, result->rows, result->cols);
+            if(allocate_fail) {
+                return allocate_fail;
             }
+
+            int mul_fail = mul_matrix(temp, result, mat);
+            if (mul_fail) {
+                return mul_fail;
+            }
+
+            deallocate_matrix(result);
+            result = temp;
+            temp = NULL;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     } else if (pow == 0){
-        fill_matrix(result, 0);
+//        fill_matrix(result, 0);
         for(int i = 0; i < result->cols; i++) {
             result->data[result->cols * i + i] = 1;
         }

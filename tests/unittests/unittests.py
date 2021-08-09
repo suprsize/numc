@@ -11,10 +11,10 @@ advise you to modify them and add new tests.
 
 small_rows = 10**1 + 9
 small_cols = 10**1 + 9
-medium_rows = 2 * (10**2) + 9
-medium_cols = 2 * (10**2) + 9
-high_rows = (10**3)
-high_cols = (10**3)
+medium_rows = 2 * (10**4) + 9
+medium_cols = 2 * (10**4) + 9
+high_rows = (10**5)
+high_cols = (10**5)
 
 class TestAdd(TestCase):
     def test_small_numbers_add(self):
@@ -176,7 +176,7 @@ class TestPow(TestCase):
         is_correct, speed_up = compute([dp_mat, 10], [nc_mat, 10], "pow")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
-        
+
     def test_zero_pow(self):
         # TODO: YOUR CODE HERE
         dp_mat, nc_mat = rand_dp_nc_matrix(medium_rows, medium_cols, seed=1323)

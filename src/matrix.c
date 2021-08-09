@@ -145,7 +145,7 @@ void set(matrix *mat, int row, int col, double val) {
  * Sets all entries in mat to val
  */
 void fill_matrix(matrix *mat, double val) {
-//    #pragma omp parallel for
+    #pragma omp parallel for
     for(int i = 0; i < mat->rows * mat->cols; i++) {
         mat->data[i] = val;
     }
@@ -213,14 +213,15 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     }
 
     for(int r = 0; r < result->rows; r++) {
+        #pragma omp parallel for
         for(int c = 0; c < result->cols; c++) {
             double temp_sum = 0;
             int size = mat1->cols;
-            #pragma omp parallel
+//            #pragma omp parallel
             {
                 __m256d temp1, temp2;
                 __m256d sum = _mm256_setzero_pd();
-                #pragma omp for
+//                #pragma omp for
                 for(int k = 0; k < size / 4 * 4; k += 4) {
                     temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
                     temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
@@ -229,7 +230,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
                 double sum_arr[4];
                 _mm256_storeu_pd(sum_arr, sum);
                 double arr_total = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
-                #pragma omp critical
+//                #pragma omp critical
                 temp_sum += arr_total;
             }
             for(int k = size - (size % 4); k < size; k++) {
@@ -310,6 +311,7 @@ int abs_matrix(matrix *result, matrix *mat) {
     if (mat->rows != result->rows || mat->cols != result->cols) {
         return -1;
     }
+    #pragma omp parallel for
     for(int i = 0; i < mat->rows * mat->cols; i++) {
         if (mat->data[i] < 0) {
             result->data[i] = -mat->data[i];

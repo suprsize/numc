@@ -273,14 +273,14 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         return 0;
     }
 
-    matrix *odd_result = NULL;
-    int allocate_fail = allocate_matrix(&odd_result, rows, cols);
+    matrix *y = NULL;
+    int allocate_fail = allocate_matrix(&y, rows, cols);
     if(allocate_fail) {
         return allocate_fail;
     }
     #pragma omp parallel for
     for(unsigned int i = 0; i < cols; i++) {
-        odd_result->data[cols * i + i] = 1;
+        y->data[cols * i + i] = 1;
     }
     matrix *x = NULL;
     allocate_fail = allocate_matrix(&x, rows, cols);
@@ -294,15 +294,15 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             exp = exp / 2;
         } else {
             matrix* y_temp = NULL;
-            int allocate_fail = allocate_matrix(&y, rows, cols);
+            int allocate_fail = allocate_matrix(&y_temp, rows, cols);
             if(allocate_fail) {
                 return allocate_fail;
             }
-            int mul_fail = mul_matrix(y_temp, odd_result, x);
+            int mul_fail = mul_matrix(y_temp, y, x);
             if (mul_fail) {
                 return mul_fail;
             }
-            memcpy(odd_result->data, y_temp->data, sizeof(double) * rows * cols);
+            memcpy(y->data, y_temp->data, sizeof(double) * rows * cols);
             exp = (exp - 1) / 2;
         }
         matrix *x_temp = NULL;
@@ -316,7 +316,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         }
         memcpy(x->data, x_temp->data, sizeof(double) * rows * cols);
     }
-    int mul_fail = mul_matrix(result, x, odd_result);
+    int mul_fail = mul_matrix(result, x, y);
     if (mul_fail) {
         return mul_fail;
     }

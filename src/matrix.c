@@ -149,10 +149,13 @@ void fill_matrix(matrix *mat, double val) {
     __m256d val_256 = _mm256_set1_pd(val);
     unsigned int size = mat->rows * mat->cols;
     #pragma omp parallel for
-    for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
+    for(unsigned int i = 0; i < size / 16 * 16; i += 16) {
         _mm256_storeu_pd(mat->data + i, val_256);
+        _mm256_storeu_pd(mat->data + i + 4, val_256);
+        _mm256_storeu_pd(mat->data + i + 8, val_256);
+        _mm256_storeu_pd(mat->data + i + 12, val_256);
     }
-    for(unsigned int i = size - (size % 4); i < size; i++) {
+    for(unsigned int i = size - (size % 16); i < size; i++) {
         mat->data[i] = val;
     }
 }
@@ -170,9 +173,8 @@ int add_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     __m256d sum, temp1, temp2;
     #pragma omp parallel for private(sum, temp1, temp2)
     for(unsigned int i = 0; i < size / 4 * 4; i += 4) {
-        temp1 = _mm256_loadu_pd(mat1->data + i);
-        temp2 = _mm256_loadu_pd(mat2->data + i);
-        sum = _mm256_add_pd(temp1, temp2);
+        sum = _mm256_add_pd(_mm256_loadu_pd(mat1->data + i),
+                            _mm256_loadu_pd(mat2->data + i));
         _mm256_storeu_pd(result->data + i, sum);
     }
     for(unsigned int i = size - (size % 4); i < size; i++) {
@@ -273,19 +275,11 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             pow_matrix(result, temp, pow / 2);
         } else {
             pow_matrix(result, temp, (pow - 1) / 2);
-//
-//            matrix *temp2 = NULL;
-//            int allocate_fail = allocate_matrix(&temp2, result->rows, result->cols);
-//            if(allocate_fail) {
-//                return allocate_fail;
-//            }
-
             int mul_fail = mul_matrix(temp, result, mat);
             if (mul_fail) {
                 return mul_fail;
             }
             memcpy(result->data, temp->data, sizeof(double) * result->rows * result->cols);
-//            deallocate_matrix(temp2);
         }
         deallocate_matrix(temp);
     } else if (pow == 0){

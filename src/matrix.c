@@ -285,7 +285,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
                 return mul_fail;
             }
             memcpy(result->data, temp->data, sizeof(double) * result->rows * result->cols);
-            deallocate_matrix(temp2);
+//            deallocate_matrix(temp2);
         }
         deallocate_matrix(temp);
     } else if (pow == 0){

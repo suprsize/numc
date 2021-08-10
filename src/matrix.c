@@ -223,36 +223,24 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     for(unsigned int r = 0; r < result->rows; r++) {
         #pragma omp parallel for
         for(unsigned int c = 0; c < result->cols; c++) {
-            double temp_sum = 0;
             int size = mat1->cols;
-//            __m256d temp1, temp2;
             __m256d sum = _mm256_setzero_pd();
-
             for(unsigned int k = 0; k < size / 16 * 16; k += 16) {
-//                temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k));
-//                temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k));
                 sum = _mm256_fmadd_pd(_mm256_loadu_pd(mat1->data + (mat1->cols * r + k)),
                                       _mm256_loadu_pd(transp2->data + (transp2->cols * c + k)), sum);
 
-//                temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 4));
-//                temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 4));
                 sum = _mm256_fmadd_pd(_mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 4)),
                                       _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 4)), sum);
 
-//                temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 8));
-//                temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 8));
                 sum = _mm256_fmadd_pd(_mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 8)),
                                       _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 8)), sum);
 
-//                temp1 = _mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 12));
-//                temp2 = _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 12));
                 sum = _mm256_fmadd_pd(_mm256_loadu_pd(mat1->data + (mat1->cols * r + k + 12)),
                                       _mm256_loadu_pd(transp2->data + (transp2->cols * c + k + 12)), sum);
             }
             double sum_arr[4];
             _mm256_storeu_pd(sum_arr, sum);
-            double arr_total = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
-            temp_sum += arr_total;
+            double temp_sum = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
             for(unsigned int k = size - (size % 16); k < size; k++) {
                 temp_sum += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
             }

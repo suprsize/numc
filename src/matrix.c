@@ -282,42 +282,41 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
     for(unsigned int i = 0; i < cols; i++) {
         odd_result->data[cols * i + i] = 1;
     }
-    matrix *matrix = NULL;
-    allocate_fail = allocate_matrix(&matrix, rows, cols);
+    matrix *x = NULL;
+    allocate_fail = allocate_matrix(&x, rows, cols);
     if(allocate_fail) {
         return allocate_fail;
     }
-    memcpy(matrix->data, mat->data, sizeof(double) * rows * cols);
+    memcpy(x->data, mat->data, sizeof(double) * rows * cols);
 
     while(exp > 1) {
         if (exp % 2 == 0) {
             exp = exp / 2;
         } else {
-            exp = (exp - 1) / 2;
-
-            matrix *y_temp = NULL;
-            int allocate_fail = allocate_matrix(&y_temp, rows, cols);
+            matrix* y_temp = NULL;
+            int allocate_fail = allocate_matrix(&y, rows, cols);
             if(allocate_fail) {
                 return allocate_fail;
             }
-            int mul_fail = mul_matrix(y_temp, odd_result, matrix);
+            int mul_fail = mul_matrix(y_temp, odd_result, x);
             if (mul_fail) {
                 return mul_fail;
             }
             memcpy(odd_result->data, y_temp->data, sizeof(double) * rows * cols);
+            exp = (exp - 1) / 2;
         }
         matrix *x_temp = NULL;
         int allocate_fail = allocate_matrix(&x_temp, rows, cols);
         if(allocate_fail) {
             return allocate_fail;
         }
-        int mul_fail = mul_matrix(x_temp, matrix, matrix);
+        int mul_fail = mul_matrix(x_temp, x, x);
         if (mul_fail) {
             return mul_fail;
         }
-        memcpy(matrix->data, x_temp->data, sizeof(double) * rows * cols);
+        memcpy(x->data, x_temp->data, sizeof(double) * rows * cols);
     }
-    int mul_fail = mul_matrix(result, matrix, odd_result);
+    int mul_fail = mul_matrix(result, x, odd_result);
     if (mul_fail) {
         return mul_fail;
     }

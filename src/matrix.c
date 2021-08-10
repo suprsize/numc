@@ -213,7 +213,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     }
     #pragma omp parallel for
     for(unsigned int r = 0; r < transp2->rows; r++) {
-        #pragma omp parallel for
+//        #pragma omp parallel for
         for(unsigned int c = 0; c < transp2->cols; c++) {
             transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
         }
@@ -221,7 +221,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
 
     #pragma omp parallel for
     for(unsigned int r = 0; r < result->rows; r++) {
-        #pragma omp parallel for
+//        #pragma omp parallel for
         for(unsigned int c = 0; c < result->cols; c++) {
             double temp_sum = 0;
             int size = mat1->cols;

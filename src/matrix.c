@@ -273,16 +273,18 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
             pow_matrix(result, temp, pow / 2);
         } else {
             pow_matrix(result, temp, (pow - 1) / 2);
-            matrix *temp2 = NULL;
-            int allocate_fail = allocate_matrix(&temp2, result->rows, result->cols);
-            if(allocate_fail) {
-                return allocate_fail;
-            }
-            int mul_fail = mul_matrix(temp2, result, mat);
+//
+//            matrix *temp2 = NULL;
+//            int allocate_fail = allocate_matrix(&temp2, result->rows, result->cols);
+//            if(allocate_fail) {
+//                return allocate_fail;
+//            }
+
+            int mul_fail = mul_matrix(temp, result, mat);
             if (mul_fail) {
                 return mul_fail;
             }
-            memcpy(result->data, temp2->data, sizeof(double) * result->rows * result->cols);
+            memcpy(result->data, temp->data, sizeof(double) * result->rows * result->cols);
             deallocate_matrix(temp2);
         }
         deallocate_matrix(temp);

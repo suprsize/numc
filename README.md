@@ -10,6 +10,8 @@
   - <b>Most interesting was to learn about threading and working on multiple data at the same time.</b>
 - What did you learn?
   - <b>I learned about Python Environment.</b>
+  - <b>Learned that pragma is going to slow down if used in inner loops and is only affective in outer-most loop</b>
+  - <b>Learned that in SIMD masking is used to get around if statements</b>
   - <b>How to do threading and getting more used to C</b>
   - <b>Learned about testing a C program by Python</b>
   - <b>Learned about timing a program.</b>
@@ -26,6 +28,14 @@
 ### If you worked with a partner:
 - In one short paragraph, describe your contribution(s) to the project.
   - <b>I did everything on my own.</b>
+  - <b>For Numc I first looked through the existing code to know 
+    how to use the python function and then tried to replicate something similar.
+    First started on add and did the error case and created a numc.matrix and went on
+    from there. Other functions were similar. I did some googling to figure out what
+    some python functions were doing and how to use them. Had to do testing after I wrote all
+    the functions becuase I didn't know it depended on get and set which I did last.</b>
+  - <b>For matrix.c speed up I first started with SIMD on add and parallized it and the
+    moved on to mul and abs and then at the end did pow exponentiation.</b>
   - <b>Did some testing, did some coding on matrix.c and numc.c</b>
 - In one short paragraph, describe your partner's contribution(s) to the project.
   - <b>My partner was a bum. He did nothing. </b>

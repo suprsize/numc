@@ -256,6 +256,8 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
  * Store the result of raising mat to the (pow)th power to `result`.
  * Return 0 upon success and a nonzero value upon failure.
  * Remember that pow is defined with matrix multiplication, not element-wise multiplication.
+ * Got help from this link:
+ * @source: https://en.wikipedia.org/wiki/Exponentiation_by_squaring
  */
 int pow_matrix(matrix *result, matrix *mat, int pow) {
     /* TODO: check for power of smaller than 2 */

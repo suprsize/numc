@@ -215,7 +215,7 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
     for(unsigned int r = 0; r < transp2->rows; r++) {
         #pragma omp parallel for
         for(unsigned int c = 0; c < transp2->cols; c++) {
-            transp2->data[transp2->cols * r + c] = mat2->data[mat2->cols * c + r ];
+            *(transp2->data + transp2->cols * r + c) = *(mat2->data + mat2->cols * c + r);
         }
     }
 
@@ -242,9 +242,9 @@ int mul_matrix(matrix *result, matrix *mat1, matrix *mat2) {
             _mm256_storeu_pd(sum_arr, sum);
             double temp_sum = sum_arr[0] + sum_arr[1] + sum_arr[2] + sum_arr[3];
             for(unsigned int k = size - (size % 16); k < size; k++) {
-                temp_sum += mat1->data[mat1->cols * r + k] * transp2->data[transp2->cols * c + k];
+                temp_sum += *(mat1->data + mat1->cols * r + k) * *(transp2->data + transp2->cols * c + k);
             }
-            result->data[result->cols * r + c] = temp_sum;
+            *(result->data + result->cols * r + c) = temp_sum;
         }
     }
     deallocate_matrix(transp2);

@@ -15,6 +15,7 @@
   - <b>Learned about timing a program.</b>
 - Is there anything you would change?
   - <b>I think getting rid of sub and neg was a very good choice. It would have been just a repetitive work. </b>
+  - <b>Show the command to run the unittest from root folder</b>
   - <b>I think adding how much speed up to expect on how large a matrix would be a good idea.</b>
   - <b>Change the exponentiation link to the Wikipedia link or something more easy to read would be good choice.</b>
   - <b>Maybe for Task 2, similar to task 3 add all the useful function that we need</b>

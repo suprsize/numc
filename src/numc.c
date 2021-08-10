@@ -335,10 +335,14 @@ static PyObject *Matrix61c_add(Matrix61c* self, PyObject* args) {
             PyErr_SetString(PyExc_RuntimeError, "allocate_matrix or allocate_matrix_ref fails to allocate space.!");
             return NULL;
         }
-        PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
+        PyErr_SetString(PyExc_RuntimeError, "don't know error code from alloc!");
         return NULL;
     }
-    add_matrix(new_mat, a->mat, b->mat);
+    int add_fail = add_matrix(new_mat, a->mat, b->mat);
+    if(add_fail) {
+        PyErr_SetString(PyExc_RuntimeError, "add failed to perform addition.!");
+        return NULL;
+    }
     Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
     rv->mat= new_mat;
     rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
@@ -384,10 +388,14 @@ static PyObject *Matrix61c_multiply(Matrix61c* self, PyObject *args) {
             PyErr_SetString(PyExc_RuntimeError, "allocate_matrix or allocate_matrix_ref fails to allocate space.!");
             return NULL;
         }
-        PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
+        PyErr_SetString(PyExc_RuntimeError, "don't know error code from alloc!");
         return NULL;
     }
-    mul_matrix(new_mat, a->mat, b->mat);
+    int mul_fail = mul_matrix(new_mat, a->mat, b->mat);
+    if(mul_fail) {
+        PyErr_SetString(PyExc_RuntimeError, "mul failed to perform multiplication.!");
+        return NULL;
+    }
     Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
     rv->mat= new_mat;
     rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
@@ -425,10 +433,14 @@ static PyObject *Matrix61c_abs(Matrix61c *self) {
             PyErr_SetString(PyExc_RuntimeError, "allocate_matrix or allocate_matrix_ref fails to allocate space.!");
             return NULL;
         }
-        PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
+        PyErr_SetString(PyExc_RuntimeError, "don't know error code from alloc!");
         return NULL;
     }
-    abs_matrix(new_mat, a->mat);
+    int abs_fail = abs_matrix(new_mat, a->mat);
+    if(abs_fail) {
+        PyErr_SetString(PyExc_RuntimeError, "abs failed to perform!");
+        return NULL;
+    }
     Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
     rv->mat= new_mat;
     rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));
@@ -445,13 +457,21 @@ static PyObject *Matrix61c_pow(Matrix61c *self, PyObject *pow, PyObject *optiona
         return NULL;
     }
     if (!PyLong_Check(pow)) {
-        PyErr_SetString(PyExc_ValueError, "pow must be an integer!");
+        PyErr_SetString(PyExc_TypeError, "pow must be a positive INTEGER!");
         return NULL;
     }
     int power = PyLong_AsLong(pow);
+    if (power < 0) {
+        PyErr_SetString(PyExc_ValueError, "pow must be a POSITIVE integer!");
+        return NULL;
+    }
     Matrix61c* a = (Matrix61c*)self;
     int rows = a->mat->rows;
     int cols = a->mat->cols;
+    if (rows != cols) {
+        PyErr_SetString(PyExc_ValueError, "matrix must be square for pow");
+        return NULL;
+    }
     matrix* new_mat = NULL;
     int alloc_failed = allocate_matrix(&new_mat, rows, cols);
     if (alloc_failed){
@@ -462,10 +482,14 @@ static PyObject *Matrix61c_pow(Matrix61c *self, PyObject *pow, PyObject *optiona
             PyErr_SetString(PyExc_RuntimeError, "allocate_matrix or allocate_matrix_ref fails to allocate space.!");
             return NULL;
         }
-        PyErr_SetString(PyExc_TypeError, "don't know error code from alloc!");
+        PyErr_SetString(PyExc_RuntimeError, "don't know error code from alloc!");
         return NULL;
     }
-    pow_matrix(new_mat, a->mat, power);
+    int pow_fail = pow_matrix(new_mat, a->mat, power);
+    if(pow_fail) {
+        PyErr_SetString(PyExc_RuntimeError, "pow failed to perform");
+        return NULL;
+    }
     Matrix61c* rv = (Matrix61c*) Matrix61c_new(&Matrix61cType, NULL, NULL);
     rv->mat= new_mat;
     rv->shape = PyTuple_Pack(2, PyLong_FromLong(new_mat->rows), PyLong_FromLong(new_mat->cols));

@@ -295,27 +295,27 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         } else {
             exp = (exp - 1) / 2;
 
-            matrix *temp_odd = NULL;
-            int allocate_fail = allocate_matrix(&temp_odd, rows, cols);
+            matrix *y_temp = NULL;
+            int allocate_fail = allocate_matrix(&y_temp, rows, cols);
             if(allocate_fail) {
                 return allocate_fail;
             }
-            int mul_fail = mul_matrix(temp_odd, odd_result, matrix);
+            int mul_fail = mul_matrix(y_temp, odd_result, matrix);
             if (mul_fail) {
                 return mul_fail;
             }
-            memcpy(odd_result->data, temp_odd->data, sizeof(double) * rows * cols);
+            memcpy(odd_result->data, y_temp->data, sizeof(double) * rows * cols);
         }
-        matrix *temp_result = NULL;
-        int allocate_fail = allocate_matrix(&temp_result, rows, cols);
+        matrix *x_temp = NULL;
+        int allocate_fail = allocate_matrix(&x_temp, rows, cols);
         if(allocate_fail) {
             return allocate_fail;
         }
-        int mul_fail = mul_matrix(temp_result, matrix, matrix);
+        int mul_fail = mul_matrix(x_temp, matrix, matrix);
         if (mul_fail) {
             return mul_fail;
         }
-        memcpy(matrix->data, temp_result->data, sizeof(double) * rows * cols);
+        memcpy(matrix->data, x_temp->data, sizeof(double) * rows * cols);
     }
     int mul_fail = mul_matrix(result, matrix, odd_result);
     if (mul_fail) {

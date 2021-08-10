@@ -283,7 +283,7 @@ int pow_matrix(matrix *result, matrix *mat, int pow) {
         odd_result->data[cols * i + i] = 1;
     }
     matrix *matrix = NULL;
-    int allocate_fail = allocate_matrix(&matrix, rows, cols);
+    allocate_fail = allocate_matrix(&matrix, rows, cols);
     if(allocate_fail) {
         return allocate_fail;
     }
